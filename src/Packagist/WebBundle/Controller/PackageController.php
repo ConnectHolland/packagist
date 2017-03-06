@@ -572,7 +572,7 @@ class PackageController extends Controller
                 $io = new BufferIO('', OutputInterface::VERBOSITY_VERY_VERBOSE, new HtmlOutputFormatter(Factory::createAdditionalStyles()));
                 $config = Factory::createConfig();
                 $io->loadConfiguration($config);
-                $repository = new VcsRepository(array('url' => $package->getRepository()), $io, $config);
+                $repository = new VcsRepository($package->getRepositoryConfig(), $io, $config);
                 $loader = new ValidatingArrayLoader(new ArrayLoader());
                 $repository->setLoader($loader);
 

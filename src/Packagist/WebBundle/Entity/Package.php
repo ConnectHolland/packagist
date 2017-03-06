@@ -566,7 +566,7 @@ class Package
             $io = new NullIO();
             $config = Factory::createConfig();
             $io->loadConfiguration($config);
-            $repository = new VcsRepository(array('url' => $this->repository), $io, $config);
+            $repository = new VcsRepository($this->getRepositoryConfiguration(), $io, $config);
 
             $driver = $this->vcsDriver = $repository->getDriver();
             if (!$driver) {
@@ -595,6 +595,29 @@ class Package
     public function getRepository()
     {
         return $this->repository;
+    }
+
+    /**
+     * Returns the repository configuration.
+     *
+     * @return array
+     */
+    public function getRepositoryConfiguration()
+    {
+        $repositoryConfiguration = array(
+            'url' => $this->repository
+        );
+
+        $composerConfig = Factory::createConfig();
+        foreach ($composerConfig->getRepositories() as $repository => $repositorySettings) {
+             if (isset($repositorySettings['url']) && (strpos($this->repository, $repositorySettings['url']) === 0) ) {
+                 foreach ($repositorySettings as $repositorySettingKey => $repositorySetting) {
+                      $repositoryConfiguration[$repositorySettingKey] = $repositorySetting;
+                 }
+             }
+        }
+
+        return $repositoryConfiguration;
     }
 
     /**
