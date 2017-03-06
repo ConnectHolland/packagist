@@ -598,6 +598,29 @@ class Package
     }
 
     /**
+     * Returns the repository configuration.
+     *
+     * @return array
+     */
+    public function getRepositoryConfiguration()
+    {
+        $repositoryConfiguration = array(
+            'url' => $this->repository
+        );
+
+        $composerConfig = Factory::createConfig();
+        foreach ($composerConfig->getRepositories() as $repository => $repositorySettings) {
+             if (isset($repositorySettings['url']) && (strpos($this->repository, $repositorySettings['url']) === 0) ) {
+                 foreach ($repositorySettings as $repositorySettingKey => $repositorySetting) {
+                      $repositoryConfiguration[$repositorySettingKey] = $repositorySetting;
+                 }
+             }
+        }
+
+        return $repositoryConfiguration;
+    }
+
+    /**
      * Add versions
      *
      * @param Version $versions
