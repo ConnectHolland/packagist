@@ -114,7 +114,7 @@ class UpdatePackagesCommand extends ContainerAwareCommand
                             $io->setAuthentication($domain, $auth['username'], $auth['password']);
                         }
                     }
-                    $repository = new VcsRepository(array('url' => $package->getRepository()), $io, $config);
+                    $repository = new VcsRepository($package->getRepositoryConfiguration(), $io, $config);
                     $repository->setLoader($loader);
                     $updater->update($io, $config, $package, $repository, $flags, $start);
                 } catch (InvalidRepositoryException $e) {

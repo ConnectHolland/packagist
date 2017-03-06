@@ -252,7 +252,7 @@ class ApiController extends Controller
                     $loader = new ValidatingArrayLoader(new ArrayLoader());
 
                     // prepare repository
-                    $repository = new VcsRepository(array('url' => $package->getRepository()), $io, $config);
+                    $repository = new VcsRepository($package->getRepositoryConfiguration(), $io, $config);
                     $repository->setLoader($loader);
 
                     // perform the actual update (fetch and re-scan the repository's source)
