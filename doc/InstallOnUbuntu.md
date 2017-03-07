@@ -57,8 +57,15 @@ Create an Apache configuration:
 ```
 
 
-## 4. Configure MySQL
+## 4. Configure MySQL server 5.7
 Create a database and a database user.
+
+Change the SQL mode by adding the following configuration:
+```
+sudo echo "[mysqld]" > /etc/mysql/mysql.conf.d/packagist.cnf
+sudo echo "sql-mode=\"STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION\"" >> /etc/mysql/mysql.conf.d/packagist.cnf
+sudo service mysql restart
+```
 
 
 ## 5. Install Composer
