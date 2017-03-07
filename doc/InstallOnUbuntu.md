@@ -3,17 +3,34 @@ This installation guide assumes the following:
 * A basic Ubuntu 16.04 install.
 * The installation path for Packagist is `/srv/packagist/`.
 * The composer home is `/srv/composer/`.
+* Packagist will run on a separate `packagist` user.
 
 
 ## 1. Install APT packages
+The commands below install the following packages:
+* Apache 2.4.
+* PHP 7.1 and required modules.
+* MySQL server.
+* Version control binaries Git and Subversion.
+* Postfix: a Mail Tranfer Agent.
+
 ```
 sudo add-apt-repository ppa:ondrej/php
 sudo add-apt-repository ppa:chris-lea/redis-server
 sudo apt-get update
-sudo apt-get install -y postfix git subversion mysql-server default-jdk redis-server solr-tomcat libapache2-mod-php7.1 php7.1-cli php7.1-curl php7.1-intl php7.1-json php7.1-mysql php7.1-xml php7.1-zip
+sudo apt-get install -y postfix git subversion mysql-server default-jdk redis-server solr-tomcat libapache2-mpm-itk libapache2-mod-php7.1 php7.1-cli php7.1-curl php7.1-intl php7.1-json php7.1-mysql php7.1-xml php7.1-zip
 ```
 
-## 2. Configure Apache 2.4
+
+## 2. Create the Packagist user
+```
+sudo useradd -g www-data -M -d /srv/packagist packagist
+sudo mkdir /srv/composer
+sudo mkdir /srv/packagist
+```
+
+
+## 3. Configure Apache 2.4
 ```
 sudo a2enmod rewrite
 sudo service apache2 restart
@@ -23,6 +40,8 @@ Create an Apache configuration:
 ```
 <VirtualHost *:80>
     ServerName composer.packages
+
+    AssignUserId packagist www-data
 
     DocumentRoot /srv/packagist/production/web/
     DirectoryIndex app.php
@@ -37,16 +56,19 @@ Create an Apache configuration:
 </VirtualHost>
 ```
 
-## 3. Configure MySQL
+
+## 4. Configure MySQL
 Create a database and a database user.
 
-## 4. Install Composer
+
+## 5. Install Composer
 ```
 curl -sS https://getcomposer.org/installer | php
 sudo mv composer.phar /usr/local/bin/composer
 ```
 
-## 5. Install Packagist
+
+## 6. Install Packagist
 
 ### Clone from the Connect Holland GitHub fork
 ```
@@ -95,7 +117,8 @@ For more information, see: [Setting up or Fixing File Permissions](http://symfon
 ln -s /srv/packagist/customized/ /srv/packagist/production
 ```
 
-## 6. Configure Solr
+
+## 7. Configure Solr 3.6
 
 ### Copy the schema provided with Packagist
 ```
@@ -109,16 +132,19 @@ Change the core 'name' attribute and 'defaultCoreName' attribute to 'packagist' 
 sudo service tomcat7 restart
 ```
 
-## 7. Configure commands in crontab
-The dump command is run for the first time, it needs to run in forced mode to dump all (existing) packages:
+
+## 8. Configure commands in crontab
+Running the update and dump commands for the first time requires them to run in forced mode:
 ```
+/srv/packagist/production/app/console packagist:update --env=prod --force
 /srv/packagist/production/app/console packagist:dump --env=prod --force
 ```
 
 Afterwards you can install the commands in the crontab:
 ```
-sudo echo "* * * * * /srv/packagist/production/app/console packagist:update --no-debug --env=prod" >> /etc/crontab
-sudo echo "* * * * * /srv/packagist/production/app/console packagist:dump --no-debug --env=prod" >> /etc/crontab
-sudo echo "* * * * * /srv/packagist/production/app/console packagist:index --no-debug --env=prod" >> /etc/crontab
-sudo echo "0 2 * * * /srv/packagist/production/app/console packagist:stats:compile --no-debug --env=prod" >> /etc/crontab
+sudo echo "" >> /etc/crontab
+sudo echo "*   * *   *   *   packagist   /srv/packagist/production/app/console packagist:update --no-debug --env=prod" >> /etc/crontab
+sudo echo "*   * *   *   *   packagist   /srv/packagist/production/app/console packagist:dump --no-debug --env=prod" >> /etc/crontab
+sudo echo "*   * *   *   *   packagist   /srv/packagist/production/app/console packagist:index --no-debug --env=prod" >> /etc/crontab
+sudo echo "0   2 *   *   *   packagist   /srv/packagist/production/app/console packagist:stats:compile --no-debug --env=prod" >> /etc/crontab
 ```
