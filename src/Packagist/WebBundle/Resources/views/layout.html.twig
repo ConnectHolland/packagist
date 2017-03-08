@@ -61,16 +61,16 @@
                                 </section>
                             </li>
                         {%- else %}
-                            <li>
+                            <!--<li>
                                 <a href="{{ path('fos_user_registration_register') }}">{{ 'menu.create_account'|trans }}</a>
-                            </li>
+                            </li>-->
                             <li class="nav-user">
                                 <section class="nav-user-signin">
                                     <a href="{{ path('hwi_oauth_connect') }}">{{ 'menu.sign_in'|trans }}</a>
 
                                     <section class="signin-box">
                                         <form action="{{ path('login_check') }}" method="POST">
-                                            <div class="input-group">
+                                            <!--<div class="input-group">
                                                 <input class="form-control" type="text" id="_username" name="_username" placeholder="{{ 'security.login.username'|trans({}, 'FOSUserBundle') }}">
                                                 <span class="input-group-addon"><span class="icon-user"></span></span>
                                             </div>
@@ -84,20 +84,20 @@
                                                     <input type="checkbox" id="_remember_me" name="_remember_me" value="on" checked="checked" />
                                                     {{- 'security.login.remember_me'|trans({}, 'FOSUserBundle') }}
                                                 </label>
-                                            </div>
+                                            </div>-->
 
                                             {%- if packagist_host and packagist_host in app.request.headers.get('Referer') %}
                                                 <input type="hidden" name="_target_path" value="{{ app.request.headers.get('Referer') }}" />
                                             {%- endif %}
 
                                             <div class="signin-box-buttons">
-                                                <a href="{{ hwi_oauth_login_url('github') }}" class="pull-right btn btn-primary btn-github"><span class="icon-github"></span>Use Github</a>
-                                                <button type="submit" class="btn btn-success" id="_submit" name="_submit">{{ 'security.login.submit'|trans({}, 'FOSUserBundle') }}</button>
+                                                <a style="width: 100%" href="{{ hwi_oauth_login_url('github') }}" class="pull-right btn btn-primary btn-github"><span class="icon-github"></span>Use Github</a>
+                                                <!--<button type="submit" class="btn btn-success" id="_submit" name="_submit">{{ 'security.login.submit'|trans({}, 'FOSUserBundle') }}</button>-->
                                             </div>
                                         </form>
 
                                         <div class="signin-box-register">
-                                            <a href="{{ path('fos_user_registration_register') }}">{{ 'signinbox.register'|trans }}</a>
+                                            <!--<a href="{{ path('fos_user_registration_register') }}">{{ 'signinbox.register'|trans }}</a>-->
                                         </div>
                                     </section>
                                 </section>
