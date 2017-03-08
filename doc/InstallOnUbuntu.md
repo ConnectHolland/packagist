@@ -25,9 +25,13 @@ sudo apt-get install -y postfix git subversion mysql-server default-jdk redis-se
 ## 2. Create the Packagist user
 ```
 sudo useradd -g www-data -M -d /srv/packagist packagist
-sudo mkdir /srv/composer
 sudo mkdir /srv/packagist
+sudo -i -u packagist ssh-keygen
 ```
+
+Add the generated SSH public key to the user in [GitHub](https://github.com/settings/keys).
+
+:warning: It's advisable create a separate user for managing the packages. This way you can limit the access on the repositories.
 
 
 ## 3. Configure Apache 2.4
